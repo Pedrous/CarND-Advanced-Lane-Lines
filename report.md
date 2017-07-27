@@ -14,14 +14,14 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./output_images/calibration.png "Undistorted"
-[image2]: ./output_images/figure_1.jpg "Test image 5"
-[image3]: ./output_images/figure_2.jpg "Test image 1"
-[image4]: ./output_images/figure_3.jpg "Test image straight lines 2"
-[image5]: ./output_images/figure_4.jpg "Test image 3"
-[image6]: ./output_images/figure_5.jpg "Test image straight lines 1"
-[image7]: ./output_images/figure_6.jpg "Test image 4"
-[image8]: ./output_images/figure_7.jpg "Test image 6"
-[image9]: ./output_images/figure_8.jpg "Test image 2"
+[image2]: ./output_images/figure_1.png "Test image 5"
+[image3]: ./output_images/figure_2.png "Test image 1"
+[image4]: ./output_images/figure_3.png "Test image straight lines 2"
+[image5]: ./output_images/figure_4.png "Test image 3"
+[image6]: ./output_images/figure_5.png "Test image straight lines 1"
+[image7]: ./output_images/figure_6.png "Test image 4"
+[image8]: ./output_images/figure_7.png "Test image 6"
+[image9]: ./output_images/figure_8.png "Test image 2"
 [video1]: ./test_videos_output/project.mp4 "Video"
 
 ### Camera Calibration
@@ -72,13 +72,11 @@ This resulted in the following source and destination points:
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-![alt text][image4]
-
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
 Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
 
-![alt text][image5]
+
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
@@ -88,7 +86,14 @@ I did this in lines # through # in my code in `my_other_file.py`
 
 I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
 
+![alt text][image2]
+![alt text][image3]
+![alt text][image4]
+![alt text][image5]
 ![alt text][image6]
+![alt text][image7]
+![alt text][image8]
+![alt text][image9]
 
 ---
 
