@@ -61,7 +61,6 @@ def Warp(img, inv=False):
 		M = cv2.getPerspectiveTransform(src, dst)
 		warped = cv2.warpPerspective(img, M, img_size, flags=cv2.INTER_LINEAR)
 		
-	
 	return warped
 	
 
@@ -144,7 +143,6 @@ def hls_select(img, thresh=(0, 255), channel=2):
     
     
 def find_window_centroids(warped, window_width, window_height, margin):
-    
     window_centroids = [] # Store the (left,right) window centroid positions per level
     window = np.ones(window_width) # Create our window template that we will use for convolutions
     
@@ -405,9 +403,10 @@ def Pipeline(img):
 	out = cv2.putText(out, string2, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 3, cv2.LINE_AA)
 	
 	return out
-	
 
-# A pipeline for the images
+
+### The Camera calibration and undistortion ####
+# Load the object and Image points
 dist_pickle = pickle.load( open( "dist.p", "rb" ) )
 objpoints = dist_pickle[0]
 imgpoints = dist_pickle[1]
@@ -415,53 +414,22 @@ imgpoints = dist_pickle[1]
 # Acquire the filepaths for the calibration images
 cal_paths = glob.glob('camera_cal/*.jpg')
 cal_paths.sort()
-#print(cal_paths)
 
 # Calibrate the camera
 global mtx, dist
 mtx, dist = Calibrate(cv2.imread('camera_cal/calibration1.jpg'), objpoints, imgpoints)
 
-'''
-# Obtain the original and undistorted images
-original = []
-undistorted = []
-for filepath in cal_paths:
-	original.append(cv2.imread(filepath))
-	undistorted.append(Undistort(original[-1], mtx, dist))
 
-
-# Plot the both image sets into two figures
-f, ax = plt.subplots(4, 5, figsize=(24, 10))
-
-for row in ax:
-	for col in row:
-		col.imshow(undistorted.pop(0), cmap='gray')
-		#col.set_title(cal_paths.pop(0), fontsize=30)
-		
-plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
-
-f2, ax2 = plt.subplots(4, 5, figsize=(24, 10))
-for row in ax2:
-	for col in row:
-		col.imshow(original.pop(0), cmap='gray')
-		#col.set_title(cal_paths.pop(0), fontsize=30)
-		
-plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
-'''
-
+### The pipeline for handling the video ###
 # Import everything needed to edit/save/watch video clips
 from moviepy.editor import VideoFileClip
 from IPython.display import HTML
 
+# Create a class for both lane lines to save the values during the video processing
 R = Line()
 L = Line()
 
 white_output = 'test_videos_output/challenge.mp4'
-## To speed up the testing process you may want to try your pipeline on a shorter subclip of the video
-## To do so add .subclip(start_second,end_second) to the end of the line below
-## Where start_second and end_second are integer values representing the start and end of the subclip
-## You may also uncomment the following line for a subclip of the first 5 seconds
-##clip1 = VideoFileClip("test_videos/solidWhiteRight.mp4").subclip(0,5)
 clip1 = VideoFileClip("challenge_video.mp4")
 white_clip = clip1.fl_image(Pipeline) #NOTE: this function expects color images!!
 white_clip.write_videofile(white_output, audio=False)

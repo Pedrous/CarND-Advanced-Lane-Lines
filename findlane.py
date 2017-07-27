@@ -306,7 +306,7 @@ def sliding_window2(binary_warped):
 	plt.ylim(720, 0)
 	'''
 	
-	return out_img, [rad, offset]
+	return [out_img, out_img2], [rad, offset]
     
     
 def Combined(imgs):
@@ -344,6 +344,8 @@ def Pipeline(img, mtx, dist):
 	pipe.append(Undistort(pipe[-1], mtx, dist))
 	pipe.append(cv2.GaussianBlur(pipe[-1], (5, 5), 0))
 	comb = Combined(pipe[-1])
+	pipe.extend(comb)
+	'''
 	pipe.append(comb[0])
 	pipe.append(comb[1])
 	pipe.append(comb[2])
@@ -356,16 +358,17 @@ def Pipeline(img, mtx, dist):
 	pipe.append(comb[9])
 	pipe.append(comb[10])
 	pipe.append(comb[11])
+	'''
 	pipe.append(Warp(pipe[-1]))
 	lane, values = sliding_window2(pipe[-1])
-	pipe.append(lane)
+	pipe.extend(lane)
 	pipe.append(Warp(pipe[-1], inv=True))
 	pipe.append(cv2.addWeighted(pipe[0], 1., pipe[-1], 0.9, 0.))
 	pipe.append(np.zeros((720,1280,3)))
 	out = pipe[-2]
 	
-	extras = ['Original', 'Undistorted', 'Gaussian Filtered', 'SobelX', 'SobelY', 'Mag', 'Gray', 'H', 'L', 'S', 'SobelX&Y', 'Mag & Gray', 'L&Mag', 'L&S']
-	titles = ['Combined Edge Detection', 'Warped Image', 'Curvature Fit', 'Unwarped Lane', 'Lane Prediction', 'None']
+	extras = ['Original', 'Undistorted', 'Gaussian Filtered', 'Sobel X', 'Sobel Y', 'Sobel Magnitude', 'Thresholded GrayScale', 'H channel', 'L channel', 'S channel', 'Sobel X & Y combined', 'Magnitude & Grayscale', 'L channel & Magnitude', 'L & S channels']
+	titles = ['Combined Edge Detection', 'Warped Image', 'Sliding window', 'Curvature Fit', 'Unwarped Lane', 'Lane Prediction']
 	extras.extend(titles)
 	titles = extras
 	f, ax = plt.subplots(4, 5, figsize=(24, 10))
@@ -404,14 +407,21 @@ for filepath in cal_paths:
 	original.append(cv2.imread(filepath))
 	undistorted.append(Undistort(original[-1], mtx, dist))
 
-
 # Plot the both image sets into two figures
-f, ax = plt.subplots(4, 5, figsize=(24, 10))
+f, ax = plt.subplots(1, 2, figsize=(24, 10))
+ax[0].imshow(original[15], cmap='gray')
+ax[1].imshow(undistorted[15], cmap='gray')
+plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
+'''
+
+'''
+# Plot the both image sets into two figures
+f, ax = plt.subplots(1, 5, figsize=(24, 10))
 
 for row in ax:
 	for col in row:
 		col.imshow(undistorted.pop(0), cmap='gray')
-		#col.set_title(cal_paths.pop(0), fontsize=30)
+		col.set_title(cal_paths.pop(0), fontsize=30)
 		
 plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
 
@@ -419,11 +429,10 @@ f2, ax2 = plt.subplots(4, 5, figsize=(24, 10))
 for row in ax2:
 	for col in row:
 		col.imshow(original.pop(0), cmap='gray')
-		#col.set_title(cal_paths.pop(0), fontsize=30)
+		col.set_title(cal_paths.pop(0), fontsize=30)
 		
 plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
 '''
-
 
 # Obtain the filepaths for the test images
 test_paths = glob.glob('test_images/*.jpg')
@@ -433,25 +442,6 @@ pipelined = []
 for filepath in test_paths:
 	original.append(cv2.imread(filepath))
 	pipelined.append(Pipeline(original[-1], mtx, dist))
-
-'''
-# Plot the original test images	
-f, ax = plt.subplots(2, 4, figsize=(24, 10))
-for idxr, row in enumerate(ax):
-	for idxc, col in enumerate(row):
-		col.imshow(cv2.cvtColor(original.pop(0), cv2.COLOR_BGR2RGB))
-		#col.set_title(cal_paths.pop(0), fontsize=30)		
-plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
-
-# Plot the pipelined test images
-#for image in pipelined:
-f2, ax2 = plt.subplots(2, 4, figsize=(24, 10))
-for row in ax2:
-	for col in row:
-		col.imshow(pipelined.pop(0), cmap='gray')
-		#col.set_title(cal_paths.pop(0), fontsize=30)		
-plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
-'''
 
 # Realize the plots
 plt.show()
