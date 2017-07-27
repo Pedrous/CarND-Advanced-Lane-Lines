@@ -101,10 +101,15 @@ I implemented this step in `Pipeline()` function in lines 397 through 398 in my 
 
 Here's a [link to my video result](./test_videos_output/project.mp4)
 
+I think it is pretty good solution, there is just small wobbling during the lighter parts of the road but it is not catastrophic.
 ---
 
 ### Discussion
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+The most crucial part here is the to detect the lane lines correctly but in a continuous video bad detection can be boosted a little bit by the fact that the previous prediction uses the last measured curve as a starting point for the next prediction to make the process more robust. 
+
+It was relatively hard to detect the lane lines and avoid the unwanted noise and to find suitable threshold levels for each detection and combine them. So for example in the challenge videos my edge detection fails quite catastrophically since it detects the sharp edge of the shadow in the left side and fails to detect the lines against the light road. So this is where my pipeline will fail.
+
+Some improvements could be to use some intelligent masking of the image before the detection. Also it would be interesting to have use some algorithm or machine learning to find the optimal paraters for the detection thresholds so that would make the job quite much easier. Also I could have improved how the previous measurements are used to increase the possibility of correct prediction for the current image.
