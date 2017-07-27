@@ -395,7 +395,7 @@ def Pipeline(img):
 	pipe.append(Warp(pipe[-1]))
 	pipe.append(sliding_window2(pipe[-1]))
 	pipe.append(Warp(pipe[-1], inv=True))
-	pipe.append(cv2.cvtColor(cv2.addWeighted(pipe[0], 1., pipe[-1], 0.9, 0.), cv2.COLOR_BGR2RGB))
+	pipe.append(cv2.cvtColor(cv2.addWeighted(pipe[1], 1., pipe[-1], 0.9, 0.), cv2.COLOR_BGR2RGB))
 	out = pipe[-1]
 	string1 = 'Curve Radius: {}(m)'.format(L.avg_curv)
 	string2 = 'Vehicle is {}(m) left of center'.format(L.avg_base_pos)
